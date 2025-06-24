@@ -1,218 +1,252 @@
+// src/app/book/[id]/page.js
 import { notFound } from "next/navigation";
 import AudioPlayer from "@/Components/AudioPlayer";
 import { featuredBooks } from "@/data/mockData";
 import Link from "next/link";
 
 export async function generateMetadata({ params }) {
-  const { id } = await params;
-  const book = featuredBooks.find((b) => b.id === parseInt(id));
-
+  const book = featuredBooks.find((b) => b.id === parseInt(params.id));
   if (!book) {
-    return {
-      title: "Book Not Found - BookAudio",
-    };
+    return { title: "Book Not Found - LearnWise" };
   }
-
   return {
-    title: `${book.title} - BookAudio`,
+    title: `${book.title} - LearnWise`,
     description: book.summary,
   };
 }
 
-export default async function BookSummary({ params }) {
-  const { id } = await params;
-  const book = featuredBooks.find((b) => b.id === parseInt(id));
+export default function BookSummary({ params }) {
+  const book = featuredBooks.find((b) => b.id === parseInt(params.id));
+  if (!book) notFound();
 
-  if (!book) {
-    notFound();
-  }
+  const getCategoryColor = (category) => {
+    const colors = {
+      "Self-help": "from-purple-500 to-pink-500",
+      Productivity: "from-green-500 to-emerald-500",
+      Sales: "from-red-500 to-orange-500",
+      Leadership: "from-blue-500 to-indigo-500",
+      Finance: "from-yellow-500 to-amber-500",
+    };
+    return colors[category] || "from-gray-500 to-gray-600";
+  };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Breadcrumb */}
-      <nav className="mb-8">
-        <ol className="flex items-center space-x-2 text-sm text-gray-600">
-          <li>
-            <Link href="/" className="hover:text-indigo-600 transition-colors">
-              Home
-            </Link>
-          </li>
-          <li>/</li>
-          <li>
-            <Link
-              href="/categories"
-              className="hover:text-indigo-600 transition-colors"
-            >
-              Categories
-            </Link>
-          </li>
-          <li>/</li>
-          <li className="text-gray-900 font-medium">{book.title}</li>
-        </ol>
-      </nav>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-indigo-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Breadcrumb */}
+        <nav className="mb-8">
+          <ol className="flex items-center space-x-2 text-sm text-gray-600">
+            <li>
+              <Link
+                href="/"
+                className="hover:text-indigo-600 transition-colors"
+              >
+                Home
+              </Link>
+            </li>
+            <li>/</li>
+            <li>
+              <Link
+                href="/categories"
+                className="hover:text-indigo-600 transition-colors"
+              >
+                Categories
+              </Link>
+            </li>
+            <li>/</li>
+            <li className="text-gray-900 font-medium truncate">{book.title}</li>
+          </ol>
+        </nav>
 
-      <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
         {/* Book Header */}
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-8 border-b border-gray-200">
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-shrink-0 mx-auto lg:mx-0">
-              <img
-                src={book.coverImage}
-                alt={book.title}
-                className="w-40 h-56 rounded-xl object-cover shadow-lg"
-              />
-            </div>
-            <div className="flex-1 text-center lg:text-left">
-              <div className="mb-4">
-                <span className="inline-block px-4 py-2 text-sm font-semibold bg-indigo-100 text-indigo-800 rounded-full">
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden mb-8">
+          <div
+            className={`bg-gradient-to-r ${getCategoryColor(
+              book.category
+            )} p-8`}
+          >
+            <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
+              <div className="flex-shrink-0">
+                <img
+                  src={book.coverImage}
+                  alt={book.title}
+                  className="w-48 h-64 rounded-2xl object-cover shadow-2xl border-4 border-white"
+                />
+              </div>
+              <div className="flex-1 text-center lg:text-left text-white">
+                <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold mb-4">
                   {book.category}
                 </span>
+                <h1 className="text-3xl lg:text-5xl font-bold mb-4 leading-tight">
+                  {book.title}
+                </h1>
+                <p className="text-xl mb-6 opacity-90">
+                  by <span className="font-semibold">{book.author}</span>
+                </p>
+
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm">
+                  <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="font-medium">{book.duration}</span>
+                  </div>
+                  {book.rating && (
+                    <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                      <svg
+                        className="w-5 h-5 text-yellow-300"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="font-medium">{book.rating}</span>
+                    </div>
+                  )}
+                  {book.listeners && (
+                    <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                      <svg
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                      </svg>
+                      <span>{book.listeners} listeners</span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3 leading-tight">
-                {book.title}
-              </h1>
-              <p className="text-xl text-gray-600 mb-6">
-                by <span className="font-semibold">{book.author}</span>
+            </div>
+          </div>
+
+          {/* Full Summary Audio */}
+          <div className="p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <span className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm mr-3">
+                📖
+              </span>
+              Complete Book Summary
+            </h2>
+            <AudioPlayer
+              audioUrl={book.audioUrl}
+              title={`${book.title} - Complete Summary`}
+            />
+          </div>
+        </div>
+
+        {/* Book Overview */}
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            About This Book
+          </h2>
+          <div className="prose max-w-none">
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-indigo-400 p-6 rounded-r-2xl mb-6">
+              <p className="text-lg text-gray-800 leading-relaxed font-medium">
+                {book.summary}
               </p>
-              <div className="flex items-center justify-center lg:justify-start space-x-6 text-sm text-gray-500">
-                <div className="flex items-center">
+            </div>
+            <p className="text-gray-700 leading-relaxed text-lg">
+              {book.fullContent}
+            </p>
+          </div>
+        </div>
+
+        {/* Modules Section */}
+        {book.modules && (
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+              <span className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold mr-4">
+                🎯
+              </span>
+              Key Learning Modules
+            </h2>
+            <div className="space-y-6">
+              {book.modules.map((module, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+                >
+                  <div className="p-8">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center space-x-4">
+                        <span className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                          {index + 1}
+                        </span>
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {module.title}
+                        </h3>
+                      </div>
+                      {module.duration && (
+                        <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                          {module.duration}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-gray-700 mb-6 leading-relaxed text-lg pl-12">
+                      {module.description}
+                    </p>
+                    {module.audioUrl && (
+                      <div className="pl-12">
+                        <AudioPlayer
+                          audioUrl={module.audioUrl}
+                          title={module.title}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Key Takeaways */}
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Key Takeaways
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              "Master the fundamental principles outlined in the book",
+              "Apply practical strategies for immediate implementation",
+              "Develop long-term habits for sustained personal growth",
+              "Learn from real-world examples and case studies",
+            ].map((takeaway, index) => (
+              <div key={index} className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg
-                    className="w-5 h-5 mr-2"
+                    className="w-4 h-4 text-white"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
                     <path
                       fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.414L11 9.586V6z"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                       clipRule="evenodd"
                     />
                   </svg>
-                  {book.duration} listening time
                 </div>
-                <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  Professional narration
-                </div>
+                <p className="text-gray-700">{takeaway}</p>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Audio Player */}
-        <div className="p-8 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-            Listen to Summary
-          </h2>
-          <AudioPlayer audioUrl={book.audioUrl} title={book.title} />
-        </div>
-
-        {/* Written Summary */}
-        <div className="p-8">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-            Book Summary
-          </h2>
-          <div className="prose max-w-none">
-            <div className="bg-indigo-50 border-l-4 border-indigo-400 p-6 mb-8 rounded-r-lg">
-              <p className="text-lg text-gray-800 leading-relaxed font-medium">
-                {book.summary}
-              </p>
-            </div>
-
-            <div className="space-y-6 text-gray-700 leading-relaxed">
-              <p className="text-lg">{book.fullContent}</p>
-
-              <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-4">
-                Key Takeaways
-              </h3>
-              <div className="bg-gray-50 rounded-xl p-6">
-                <ul className="space-y-3">
-                  <li className="flex items-start">
-                    <svg
-                      className="w-5 h-5 text-indigo-600 mr-3 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Understanding the fundamental principles and core concepts
-                    outlined in the book
-                  </li>
-                  <li className="flex items-start">
-                    <svg
-                      className="w-5 h-5 text-indigo-600 mr-3 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Practical strategies and actionable insights for immediate
-                    implementation
-                  </li>
-                  <li className="flex items-start">
-                    <svg
-                      className="w-5 h-5 text-indigo-600 mr-3 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Long-term benefits and transformative mindset shifts for
-                    sustained growth
-                  </li>
-                  <li className="flex items-start">
-                    <svg
-                      className="w-5 h-5 text-indigo-600 mr-3 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Real-world applications, case studies, and success stories
-                    from the field
-                  </li>
-                </ul>
-              </div>
-
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white mt-8">
-                <h3 className="text-lg font-semibold mb-2">💡 Pro Tip</h3>
-                <p>
-                  Take notes while listening and revisit key concepts regularly
-                  to maximize retention and application of these valuable
-                  insights.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Related Books */}
-        <div className="bg-gray-50 p-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-6">
             More from {book.category}
           </h3>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
             {featuredBooks
               .filter((b) => b.category === book.category && b.id !== book.id)
               .slice(0, 2)
@@ -220,18 +254,18 @@ export default async function BookSummary({ params }) {
                 <Link
                   key={relatedBook.id}
                   href={`/book/${relatedBook.id}`}
-                  className="flex items-center space-x-4 p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+                  className="flex items-center space-x-4 p-6 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors group"
                 >
                   <img
                     src={relatedBook.coverImage}
                     alt={relatedBook.title}
-                    className="w-12 h-16 rounded object-cover"
+                    className="w-16 h-20 rounded-lg object-cover group-hover:shadow-md transition-shadow"
                   />
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-gray-900 truncate">
+                    <h4 className="font-bold text-gray-900 truncate group-hover:text-indigo-600 transition-colors">
                       {relatedBook.title}
                     </h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 mb-1">
                       by {relatedBook.author}
                     </p>
                     <p className="text-sm text-gray-500">
@@ -239,7 +273,7 @@ export default async function BookSummary({ params }) {
                     </p>
                   </div>
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 transition-colors"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
