@@ -1,4 +1,3 @@
-// src/app/page.js
 import Link from "next/link";
 import BookCard from "@/Components/BookCard";
 import { featuredBooks } from "@/data/mockData";
@@ -28,17 +27,54 @@ export default function Homepage() {
             knowledge immediately with our curated collection.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          {/* Demo and Get Started Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+            <Link
+              href="/book/1"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>View Demo</span>
+            </Link>
+
             <Link
               href="/categories"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
-              Start Learning Now
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>Get Started</span>
             </Link>
-            <button className="border-2 border-gray-300 hover:border-indigo-600 text-gray-700 hover:text-indigo-600 px-8 py-4 rounded-2xl font-semibold text-lg transition-all hover:bg-indigo-50">
-              How It Works
-            </button>
           </div>
+
+          <Link
+            href="/how-it-works"
+            className="inline-flex items-center text-gray-600 hover:text-indigo-600 font-medium transition-colors"
+          >
+            <span>How It Works</span>
+            <svg
+              className="w-4 h-4 ml-1"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </Link>
 
           {/* Stats */}
           <div className="flex justify-center items-center space-x-8 mt-12 text-sm text-gray-600">
@@ -61,19 +97,16 @@ export default function Homepage() {
         <div className="grid md:grid-cols-3 gap-8 mb-24">
           {[
             {
-              icon: "🤖",
               title: "AI-Powered Summaries",
               description:
                 "Advanced AI extracts key insights and converts them into engaging, easy-to-understand audio content that captures the essence of entire books.",
             },
             {
-              icon: "⚡",
               title: "Save Valuable Time",
               description:
                 "Get the essence of entire books in 15-25 minute audio summaries, perfect for busy professionals and lifelong learners.",
             },
             {
-              icon: "🎧",
               title: "Learn Anywhere",
               description:
                 "Listen while commuting, exercising, or during any downtime to maximize your learning potential and build consistent habits.",
@@ -141,19 +174,42 @@ export default function Homepage() {
               Join thousands of learners who are accelerating their growth with
               our premium audio summaries.
             </p>
-            <Link
-              href="/categories"
-              className="bg-white text-indigo-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center space-x-2 shadow-lg"
-            >
-              <span>Start Learning Today</span>
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/categories"
+                className="bg-white text-indigo-600 px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-gray-100 transition-colors inline-flex items-center space-x-2 shadow-lg"
+              >
+                <span>Start Learning Today</span>
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </Link>
+              <Link
+                href="/book/1"
+                className="bg-indigo-800 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-indigo-900 transition-colors inline-flex items-center space-x-2"
+              >
+                <span>Try Demo</span>
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

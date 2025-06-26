@@ -1,13 +1,13 @@
-// src/components/AudioPlayer.js
 "use client";
 import { useState, useRef, useEffect } from "react";
 
-export default function AudioPlayer({ audioUrl, title }) {
+export default function AudioPlayer({ audioUrl, title, transcript }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [playbackRate, setPlaybackRate] = useState(1);
+  const [showTranscript, setShowTranscript] = useState(false);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -178,7 +178,7 @@ export default function AudioPlayer({ audioUrl, title }) {
       </div>
 
       {/* Additional Controls */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         {/* Volume Control */}
         <div className="flex items-center space-x-3">
           <svg
@@ -188,7 +188,7 @@ export default function AudioPlayer({ audioUrl, title }) {
           >
             <path
               fillRule="evenodd"
-              d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.824L4.176 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.176l4.207-3.824A1 1 0 019.383 3.076zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z"
+              d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.824L4.176 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.176l4.207-3.824A1 1 0 019.383 3.076z"
               clipRule="evenodd"
             />
           </svg>
@@ -220,6 +220,53 @@ export default function AudioPlayer({ audioUrl, title }) {
           ))}
         </div>
       </div>
+
+      {/* Transcript Section */}
+      {transcript && (
+        <div className="border-t border-gray-200 pt-4">
+          <button
+            onClick={() => setShowTranscript(!showTranscript)}
+            className="flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
+          >
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <span>
+              {showTranscript ? "Hide Transcript" : "Show Transcript"}
+            </span>
+            <svg
+              className={`w-5 h-5 ml-2 transition-transform ${
+                showTranscript ? "rotate-180" : ""
+              }`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {showTranscript && (
+            <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200 max-h-64 overflow-y-auto">
+              <h4 className="font-semibold mb-3 text-gray-900">Transcript</h4>
+              <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">
+                {transcript}
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

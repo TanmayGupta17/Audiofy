@@ -1,23 +1,26 @@
-// src/app/book/[id]/page.js
+"use client";
 import { notFound } from "next/navigation";
 import AudioPlayer from "@/Components/AudioPlayer";
 import { featuredBooks } from "@/data/mockData";
 import Link from "next/link";
-
-export async function generateMetadata({ params }) {
-  const book = featuredBooks.find((b) => b.id === parseInt(params.id));
-  if (!book) {
-    return { title: "Book Not Found - LearnWise" };
-  }
-  return {
-    title: `${book.title} - LearnWise`,
-    description: book.summary,
-  };
-}
+import { useState, use } from "react";
 
 export default function BookSummary({ params }) {
-  const book = featuredBooks.find((b) => b.id === parseInt(params.id));
+  const unwrappedParams = use(params); // Unwrap the params promise
+  const [feedback, setFeedback] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const book = featuredBooks.find((b) => b.id === parseInt(unwrappedParams.id));
   if (!book) notFound();
+
+  const handleSubmitFeedback = (e) => {
+    e.preventDefault();
+    console.log("Feedback submitted:", feedback);
+    setIsSubmitted(true);
+    setTimeout(() => setIsSubmitted(false), 3000);
+    setFeedback("");
+  };
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -139,6 +142,7 @@ export default function BookSummary({ params }) {
             <AudioPlayer
               audioUrl={book.audioUrl}
               title={`${book.title} - Complete Summary`}
+              transcript={book.transcript}
             />
           </div>
         </div>
@@ -199,6 +203,7 @@ export default function BookSummary({ params }) {
                         <AudioPlayer
                           audioUrl={module.audioUrl}
                           title={module.title}
+                          transcript={module.transcript}
                         />
                       </div>
                     )}
@@ -208,6 +213,72 @@ export default function BookSummary({ params }) {
             </div>
           </div>
         )}
+
+        {/* Customer Feedback Section */}
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900">
+                Want More Books Like This?
+              </h3>
+              <p className="text-gray-600 mt-1">
+                Help us build our library by suggesting books you'd love to hear
+              </p>
+            </div>
+            <button
+              onClick={() => setShowFeedback(!showFeedback)}
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all transform hover:scale-105 shadow-sm"
+            >
+              {showFeedback ? "Close" : "Request Books"}
+            </button>
+          </div>
+
+          {showFeedback && (
+            <div className="mt-6 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
+              <h4 className="text-lg font-semibold mb-4 text-gray-900">
+                Suggest Your Next Favorite Book
+              </h4>
+              {isSubmitted ? (
+                <div className="bg-green-100 border border-green-200 text-green-800 p-4 rounded-lg flex items-center">
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span>
+                    Thanks for your suggestion! We'll consider adding this book
+                    to our library.
+                  </span>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitFeedback} className="space-y-4">
+                  <textarea
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    className="w-full p-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                    placeholder="Which book should we summarize next? Tell us the title and author, and why you think it would be valuable..."
+                    rows={4}
+                    required
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-sm"
+                    >
+                      Submit Suggestion
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Key Takeaways */}
         <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 mb-8">
