@@ -44,7 +44,7 @@ export default function Homepage() {
             </Link>
 
             <Link
-              href="/categories"
+              href="/Authentication"
               className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
